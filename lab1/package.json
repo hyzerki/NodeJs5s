@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "1":"start microsoft-edge:http://localhost:3000 && nodemon app.js",
+    "2":"start microsoft-edge:http://localhost:3000 && nodemon app1.js"
+  },
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}

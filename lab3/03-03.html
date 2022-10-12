@@ -1,0 +1,28 @@
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+</head>
+
+<body>
+    <div id="result">
+
+    </div>
+    <script>
+        let n = 0;
+        const startTime = Date.now()
+        for (i = 0; i < 20; i++) {
+            fetch("http://localhost:3000/fib?k=" + i, {
+                method: "GET",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json", "Accept": "application/json" }
+            })
+                .then(response => response.json())
+                .then((responseResult) => {
+                    result.innerHTML += (n++) + " Результат: " + (Date.now() - startTime) + " | " + responseResult.k + " | " + responseResult.fib + "<br>";
+                });
+        }
+    </script>
+</body>
+
+</html>

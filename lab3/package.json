@@ -1,0 +1,14 @@
+{
+    "scripts": {
+        "1": "start microsoft-edge:http://localhost:3000 && node 03-01.js",
+        "2": "start microsoft-edge:http://localhost:3000 && node 03-02.js",
+        "4": "start microsoft-edge:http://localhost:3000 && node 03-04.js",
+        "5": "start microsoft-edge:http://localhost:3000 && node 03-05.js"
+
+
+    },
+    "dependencies": {
+        "dotenv": "^16.0.2",
+        "prompt": "^1.3.0"
+    }
+}

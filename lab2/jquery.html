@@ -1,0 +1,27 @@
+<html>
+
+<head>
+    <title>JQuery demo</title>
+    <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
+</head>
+
+<body>
+    <div style="border: 2px solid black;">
+        <div>Тест асинхронности</div>
+        <div>
+            <input type="button" value="Сообщение"
+                onclick="getElementById('forOut').innerHTML+='<div>Сообщение</div>';">
+        </div>
+        <div id="forOut">
+
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(
+            $("#forOut").load("api/name")
+        );
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,35 @@
+<html>
+
+<head>
+    <title>AJAX demo</title>
+</head>
+
+<body>
+    <div style="border: 2px solid black;">
+        <div>Тест асинхронности</div>
+        <div>
+            <input type="button" value="Сообщение"
+                onclick="getElementById('forOut').innerHTML+='<div>Сообщение</div>';">
+        </div>
+        <div id="forOut">
+
+        </div>
+    </div>
+
+    <script>
+        const xhr = new XMLHttpRequest();
+        xhr.open("GET", "api/name");
+
+        xhr.onload = () => {
+            if (xhr.status == 200) {
+                document.getElementById("forOut").innerHTML += "<div>" + xhr.responseText + "</div>";
+            } else {
+                document.getElementById("forOut").innerHTML += "<div>Error: ", xhr.statusText + "</div>";
+            }
+        };
+        xhr.send();
+        document.getElementById("forOut").innerHTML += "<div>Запрос отправлен</div>";
+    </script>
+</body>
+
+</html>

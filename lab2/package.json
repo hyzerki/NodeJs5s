@@ -1,0 +1,12 @@
+{
+    "scripts": {
+        "1": "start microsoft-edge:http://localhost:3000/html && nodemon 02-01.js",
+        "2": "start microsoft-edge:http://localhost:3000/jpg && nodemon 02-02.js",
+        "3": "start microsoft-edge:http://localhost:3000/api/name && nodemon 02-03.js",
+        "4": "start microsoft-edge:http://localhost:3000/xmlhttprequest && nodemon 02-04.js",
+        "5": "start microsoft-edge:http://localhost:3000/jquery && nodemon 02-05.js"
+    },
+    "dependencies": {
+        "nodemon": "^2.0.19"
+    }
+}

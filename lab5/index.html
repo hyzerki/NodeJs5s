@@ -1,0 +1,132 @@
+<html>
+
+<head>
+    <title>Lab 5 CRUD</title>
+    <meta charset="utf-8">
+</head>
+
+<body>
+    <div>
+        <a href="/ss">Получить статистику</a>
+    </div>
+    <div id="mainDiv" class="borderMargin">
+        <div id="input" class="borderMargin">
+            <form action="/db" id="inputForm" name="inputForm">
+                <input type="text" name="name">
+                <input type="date" name="bday">
+                <input type="submit">
+            </form>
+        </div>
+        <div id="searchStrip" class="borderMargin">
+            <form id="searchForm" name="searchForm">
+                <input id="searchFormText" name="text" type="text">
+                <input type="submit" value="Получить">
+            </form>
+        </div>
+        <div class="borderMargin">
+            <div>Список пользователей:
+                <div id="userList">
+
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function appendUserToList(user) {
+                document.getElementById("userList").innerHTML += "<div class=\"flex\" >\
+                    <div>"+ user.name + " " + user.bday + "</div>\
+                    <input type=\"button\" onclick=\"deleteUser("+ user.id + ")\" value=\"Удалить\">\
+                    <input type=\"button\" onclick=\"updateUser("+ user.id + ")\" value=\"Изменить\">\
+                    </div>";
+            }
+
+            inputForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                let formdata = new FormData(e.currentTarget);
+                let plainFormData = Object.fromEntries(formdata.entries());
+
+                let resp = await fetch(e.currentTarget.action, { method: "POST", body: JSON.stringify(plainFormData) });
+                if (resp.status != 200) {
+                    alert(await resp.text())
+                    return;
+                }
+                appendUserToList(await resp.json());
+            });
+
+            async function deleteUser(id) {
+                let resp = await fetch("/db?id=" + id, { method: "DELETE" });
+                if (resp.status != 200) {
+                    alert(await resp.text())
+                    return;
+                }
+                getUser();
+
+            }
+
+            async function updateUser(id) {
+                let formdata = new FormData(inputForm);
+                let plainFormData = Object.fromEntries(formdata.entries());
+                plainFormData.id = id;
+                let resp = await fetch("/db", { method: "PUT", body: JSON.stringify(plainFormData) });
+                if (resp.status != 200) {
+                    alert(await resp.text())
+                    return;
+                }
+                //appendUserToList(await resp.json());
+                getUser();
+            }
+
+            async function getUser() {
+                let id = document.getElementById("searchFormText").value;
+                let resp = await fetch("/db?id=" + id);
+                if (resp.status != 200) {
+                    alert(await resp.text())
+                    return;
+                }
+
+                let users = await resp.json();
+                document.getElementById("userList").innerHTML = "";
+                if (users instanceof Array) {
+                    users.forEach(element => {
+                        appendUserToList(element);
+                    });
+                } else {
+                    appendUserToList(users);
+                }
+            }
+
+            searchForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                getUser();
+            });
+
+            getUser();
+        </script>
+
+        <style>
+            .flex {
+                display: flex;
+            }
+
+            #mainDiv {
+                width: 540px;
+            }
+
+            #input {
+                border: 1px solid black;
+            }
+
+            .borderMargin {
+                border: 1px solid black;
+                border-radius: 5px;
+                margin: 10px;
+            }
+
+            form {
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+</body>
+
+</html>

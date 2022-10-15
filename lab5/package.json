@@ -1,0 +1,12 @@
+{
+  "name": "lab5",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "1":"start microsoft-edge:http://localhost:3000/ && node 05-01.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

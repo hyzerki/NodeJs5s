@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send Mail</title>
+</head>
+
+<body>
+    <form method="post" action="/sendmail">
+        <div>
+            <h3>Contact me</h3>
+        </div>
+        <div>
+            <div>
+                <label for="sender">Your email:</label>
+            </div>
+            <div>
+                <input name="sender" type="text">
+            </div>
+        </div>
+        <div>
+            <div>
+                <label for="message">Message:</label>
+            </div>
+            <div>
+                <input name="message" type="text">
+            </div>
+        </div>
+        <div>
+            <input type="submit" value="send">
+        </div>
+    </form>
+</body>
+
+</html>

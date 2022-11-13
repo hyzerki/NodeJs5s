@@ -1,0 +1,16 @@
+{
+  "name": "lab8",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "1": "start microsoft-edge:http://localhost:3000 && node 08-01.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "multiparty": "^4.2.3",
+    "xml2js": "^0.4.23"
+  }
+}

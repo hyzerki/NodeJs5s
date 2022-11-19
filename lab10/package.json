@@ -1,0 +1,16 @@
+{
+  "name": "lab10",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "1": "start microsoft-edge:http://localhost:3000/start && node 10-01.js",
+    "2": "node 10-01.js | node 10-02.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ws": "^8.11.0"
+  }
+}

@@ -1,0 +1,41 @@
+<html>
+
+<head>
+    <title>Start</title>
+</head>
+
+<body>
+    <input type="button" value="start" onclick="start(this)">
+    <div id="messageContainer">
+
+    </div>
+    <script>
+        let messageContainer = document.getElementById("messageContainer").innerHTML;
+        let n = 0;
+        let interv;
+        function insertToContainer(str) {
+            document.getElementById("messageContainer").innerHTML += `<div>${str}</div>`;
+        }
+
+        function start(btn) {
+            btn.disabled = true;
+            let socket = new WebSocket("ws:\/\/localhost:4000\/wsserver");
+            socket.onopen = () => {
+                insertToContainer("Socket connection established");
+                interv = setInterval(() => socket.send("10-01-client: " + ++n), 3000);
+            };
+            socket.onclose = (e) => {
+                insertToContainer("socket closed");
+                clearInterval(interv);
+            }
+            socket.onmessage = (e) => {
+                insertToContainer(e.data);
+            }
+            socket.onerror = (error) => {
+                alert("Error " + error.message);
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -23,7 +23,6 @@ const server = http.createServer(async (request, response) => {
             let newKAT = parseInt(url.parse(request.url, true).query.set);
             if (!Number.isNaN(newKAT)) {
                 response.writeHead(200);
-                console.log(21321211);
                 response.write(`KeepAliveTimeout has changed from ${server.keepAliveTimeout} to ${newKAT}`);
                 server.keepAliveTimeout = newKAT;
                 response.end();

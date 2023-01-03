@@ -14,7 +14,11 @@ socket.on("open", () => {
     socket.on("message", (message) => {
         console.log(message.toString());
     });
+    setTimeout(()=>{socket.close()},25000)
 });
+socket.on("close", ()=>{
+    clearInterval(interv);
+})
 
 socket.on("error", (error)=>{
     console.error(error);

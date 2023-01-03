@@ -21,11 +21,12 @@
             let socket = new WebSocket("ws:\/\/localhost:4000\/wsserver");
             socket.onopen = () => {
                 insertToContainer("Socket connection established");
-                interv = setInterval(() => socket.send("10-01-client: " + ++n), 3000);
+                socket.interv = setInterval(() => socket.send("10-01-client: " + ++n), 3000);
+                socket.clTimeout = setTimeout(()=> {socket.close()},25000);
             };
             socket.onclose = (e) => {
                 insertToContainer("socket closed");
-                clearInterval(interv);
+                clearInterval(socket.interv);
             }
             socket.onmessage = (e) => {
                 insertToContainer(e.data);
@@ -33,6 +34,7 @@
             socket.onerror = (error) => {
                 alert("Error " + error.message);
             }
+            
         }
     </script>
 </body>

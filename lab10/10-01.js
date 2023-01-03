@@ -26,7 +26,7 @@ wsserver.on("connection", (websocket) => {
         console.log(`message sent ${n}->${k}`)
     }, 5000);
     websocket.on("close", () => {
-        clearInterval(interv);
+        //clearInterval(interv);
         console.log("one of those connections was closed");
     })
 });

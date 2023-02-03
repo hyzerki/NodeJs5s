@@ -1,0 +1,15 @@
+{
+  "name": "lab14",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "1": "start microsoft-edge:http://localhost:3000/ && node 14-01.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "mssql": "^9.1.1"
+  }
+}

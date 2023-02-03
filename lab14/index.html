@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 14</title>
+</head>
+<style>
+    #get_output>div{
+        border: 1px black solid;
+        width: 300px;
+    }
+</style>
+<body>
+
+<div>
+    <div>
+        <label>Получить все кафедры</label>
+        <input type="button" onclick="doGet()" value="*тык*">
+        <input type="button" onclick="get_output.innerHTML='';" value="*очистить*">
+    </div>
+    <div id="get_output">
+
+    </div>
+</div>
+<hr>
+<div id="pulpit_input">
+    <div>
+        <div>
+            <label for="pulpit">Аббревиатура кафедры</label>
+        </div>
+        <div>
+            <input id="pulpit" type="text">
+        </div>
+    </div>
+    <div>
+        <div>
+            <label for="pulpit_name">Полное название кафедры</label>
+        </div>
+        <div>
+            <input id="pulpit_name" type="text">
+        </div>
+    </div>
+    <div>
+        <div>
+            <label for="faculty">Факультет кафедры</label>
+        </div>
+        <div>
+            <input id="faculty" type="text">
+        </div>
+    </div>
+    <div id="action_msg">
+
+    </div>
+    <div>
+        <div>
+            <input type="button" onclick="doPost()" value="add">
+        </div>
+        <div>
+            <input type="button" onclick="doPut()" value="update">
+        </div>
+        <div>
+            <input type="button" onclick="doDelete()" value="delete">
+        </div>
+    </div>
+</div>
+
+
+<script>
+    const get_output = document.getElementById("get_output");
+    const pulpit  = document.getElementById("pulpit");
+    const pulpit_name  = document.getElementById("pulpit_name");
+    const faculty  = document.getElementById("faculty");
+    const action_msg = document.getElementById("action_msg");
+
+    async function doGet(){
+        let response = await fetch("http://localhost:3000/api/pulpits", { method: "GET" });
+        if(!response.ok)
+        {
+            let errmsg = await response.json();
+            get_output.innerHTML=`${errmsg.code} ${errmsg.message}`;
+            return null;
+        }
+        let pulpits = await response.json();
+        get_output.innerHTML = '';
+        pulpits.forEach(pulpit=>{
+            get_output.innerHTML+=`<div>
+                                        <div>${pulpit.PULPIT}</div>
+                                        <div>${pulpit.PULPIT_NAME}</div>
+                                        <div>${pulpit.FACULTY}</div>
+                                    <div>`;
+        });
+    }
+
+    async function doPost(){
+        let body = JSON.stringify({
+            PULPIT:pulpit.value,
+            PULPIT_NAME:pulpit_name.value,
+            FACULTY:faculty.value
+        });
+        let response = await fetch("http://localhost:3000/api/pulpits", { method: "POST", body:  body});
+        if(!response.ok)
+        {
+            let errmsg = await response.json();
+            action_msg.innerHTML=`${errmsg.code} ${errmsg.message}`;
+            return null;
+        }
+        action_msg.innerHTML = 'Добавлено!';
+    }
+
+    async function doPut(){
+        let body = JSON.stringify({
+            PULPIT:pulpit.value,
+            PULPIT_NAME:pulpit_name.value,
+            FACULTY:faculty.value
+        });
+        let response = await fetch("http://localhost:3000/api/pulpits", { method: "PUT", body:  body});
+        if(!response.ok)
+        {
+            let errmsg = await response.json();
+            action_msg.innerHTML=`${errmsg.code} ${errmsg.message}`;
+            return null;
+        }
+        action_msg.innerHTML = 'Обновлено!';
+    }
+
+    async function doDelete(){
+        let response = await fetch(`http://localhost:3000/api/pulpits/${pulpit.value}`, { method: "DELETE"});
+        if(!response.ok)
+        {
+            let errmsg = await response.json();
+            action_msg.innerHTML=`${errmsg.code} ${errmsg.message}`;
+            return null;
+        }
+        action_msg.innerHTML = 'Удалено!';
+    }
+</script>
+</body>
+</html>

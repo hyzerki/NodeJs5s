@@ -27,8 +27,6 @@ let server = net.createServer((socket)=>{
     socket.on("error", error =>{
         console.log(error);
     });
-
-    socket.on("")
 });
 /*
 server.on("connection", (socket)=> {

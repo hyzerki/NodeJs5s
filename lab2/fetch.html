@@ -1,0 +1,17 @@
+<html>
+<body>
+<script>
+    fetch('http://localhost:3000/api/name')
+        .then(result => {
+            return result.text();
+        })
+        .then(text => {
+            document.getElementById("result").innerHTML = text;
+        })
+
+</script>
+<div id="result">
+
+</div>
+</body>
+</html>

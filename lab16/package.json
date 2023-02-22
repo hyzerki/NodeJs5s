@@ -1,0 +1,8 @@
+{
+  "name": "try16",
+  "version": "1.0.0",
+  "dependencies": {
+    "graphql": "^16.6.0",
+    "mssql": "^9.0.1"
+  }
+}

@@ -179,7 +179,7 @@ const server = http.createServer(async (req, res) => {
     let pathParts = dUrl.path.split("/");
     console.log(dUrl.pathname);
     console.log(dUrl.path);
-    console.log(new RegExp(/^\/api\/faculties\/\S+\/subjects$/).test(dUrl.path));
+    console.log(pathParts);
     res.setHeader("Content-Type", "application/json; charset=utf-8");
     try {
         if (req.method === "GET") {
@@ -248,18 +248,18 @@ const server = http.createServer(async (req, res) => {
                 res.statusCode = 404;
             }
         } else if (req.method === "DELETE") {
-            if (dUrl.path === "/api/faculties") {
-                res.write(JSON.stringify(await Faculty.destroy({ where: { faculty: bodyObject.faculty } })));
-            } else if (dUrl.path === "/api/pulpits") {
-                res.write(JSON.stringify(await Pulpit.destroy({ where: { pulpit: bodyObject.pulpit } })));
-            } else if (dUrl.path === "/api/subjects") {
-                res.write(JSON.stringify(await Subject.destroy({ where: { subject: bodyObject.subject } })));
-            } else if (dUrl.path === "/api/teachers") {
-                res.write(JSON.stringify(await Teacher.destroy({ where: { teacher: bodyObject.teacher } })));
-            } else if (dUrl.path === "/api/auditoriumtypes") {
-                res.write(JSON.stringify(await Auditorium_type.destroy({ where: { auditorium_type: bodyObject.auditorium_type } })));
-            } else if (dUrl.path === "/api/auditoriums") {
-                res.write(JSON.stringify(await Auditorium.destroy({ where: { faculty: bodyObject.faculty } })));
+            if (new RegExp(/^\/api\/faculties\/\S+$/).test(dUrl.path)) {
+                res.write(JSON.stringify(await Faculty.destroy({ where: { faculty: pathParts[3] } })));
+            } else if (new RegExp(/^\/api\/pulpits\/\S+$/).test(dUrl.path)) {
+                res.write(JSON.stringify(await Pulpit.destroy({ where: { pulpit: pathParts[3] } })));
+            } else if (new RegExp(/^\/api\/subjects\/\S+$/).test(dUrl.path)) {
+                res.write(JSON.stringify(await Subject.destroy({ where: { subject: pathParts[3] } })));
+            } else if (new RegExp(/^\/api\/teachers\/\S+$/).test(dUrl.path)) {
+                res.write(JSON.stringify(await Teacher.destroy({ where: { teacher: pathParts[3] } })));
+            } else if (new RegExp(/^\/api\/auditoriumtypes\/\S+$/).test(dUrl.path)) {
+                res.write(JSON.stringify(await Auditorium_type.destroy({ where: { auditorium_type: pathParts[3] } })));
+            } else if (new RegExp(/^\/api\/auditoriums\/\S+$/).test(dUrl.path)) {
+                res.write(JSON.stringify(await Auditorium.destroy({ where: { faculty: pathParts[3] } })));
             } else {
                 res.statusCode = 404;
             }

@@ -16,7 +16,7 @@
 
 	<div>
 		<div>
-			<label>Получить все кафедры</label>
+			<label>Получить всех Преподавателей</label>
 			<input type="button" onclick="doGet()" value="*тык*">
 			<input type="button" onclick="get_output.innerHTML='';" value="*очистить*">
 		</div>
@@ -28,26 +28,26 @@
 	<div id="pulpit_input">
 		<div>
 			<div>
-				<label for="pulpit">Аббревиатура кафедры</label>
+				<label for="teacher">Преподаватель</label>
+			</div>
+			<div>
+				<input id="teacher" type="text">
+			</div>
+		</div>
+		<div>
+			<div>
+				<label for="teacher_name">Имя преподавателя</label>
+			</div>
+			<div>
+				<input id="teacher_name" type="text">
+			</div>
+		</div>
+		<div>
+			<div>
+				<label for="pulpit">Кафедра</label>
 			</div>
 			<div>
 				<input id="pulpit" type="text">
-			</div>
-		</div>
-		<div>
-			<div>
-				<label for="pulpit_name">Полное название кафедры</label>
-			</div>
-			<div>
-				<input id="pulpit_name" type="text">
-			</div>
-		</div>
-		<div>
-			<div>
-				<label for="faculty">Факультет кафедры</label>
-			</div>
-			<div>
-				<input id="faculty" type="text">
 			</div>
 		</div>
 		<div id="action_msg">
@@ -69,39 +69,39 @@
 
 	<script>
 		const get_output = document.getElementById("get_output");
+		const teacher = document.getElementById("teacher");
+		const teacher_name = document.getElementById("teacher_name");
 		const pulpit = document.getElementById("pulpit");
-		const pulpit_name = document.getElementById("pulpit_name");
-		const faculty = document.getElementById("faculty");
 		const action_msg = document.getElementById("action_msg");
 
 		async function doGet() {
-			let response = await fetch("http://localhost:3000/api/pulpits", { method: "GET" });
+			let response = await fetch("http://localhost:3000/api/teachers", { method: "GET" });
 			if (!response.ok) {
 				let errmsg = await response.json();
 				get_output.innerHTML = `${errmsg.code} ${errmsg.message}`;
 				return null;
 			}
-			let pulpits = await response.json();
+			let res = await response.json();
 			get_output.innerHTML = '';
-			pulpits.forEach(pulpit => {
+			res.forEach(elem => {
 				get_output.innerHTML += `<div>
-                                        <div>${pulpit.PULPIT}</div>
-                                        <div>${pulpit.PULPIT_NAME}</div>
-                                        <div>${pulpit.FACULTY}</div>
+                                        <div>${elem.teacher}</div>
+                                        <div>${elem.teacher_name}</div>
+                                        <div>${elem.pulpit}</div>
                                     <div>`;
 			});
 		}
 
 		async function doPost() {
 			let body = JSON.stringify({
-				PULPIT: pulpit.value,
-				PULPIT_NAME: pulpit_name.value,
-				FACULTY: faculty.value
+				teacher: teacher.value,
+				teacher_name: teacher_name.value,
+				pulpit: pulpit.value
 			});
-			let response = await fetch("http://localhost:3000/api/pulpits", { method: "POST", body: body });
+			let response = await fetch("http://localhost:3000/api/teachers", { method: "POST", body: body });
 			if (!response.ok) {
 				let errmsg = await response.json();
-				action_msg.innerHTML = `${errmsg.code} ${errmsg.message}`;
+				action_msg.innerHTML = `${errmsg.errors[0].message}`;
 				return null;
 			}
 			action_msg.innerHTML = 'Добавлено!';
@@ -109,27 +109,30 @@
 
 		async function doPut() {
 			let body = JSON.stringify({
-				PULPIT: pulpit.value,
-				PULPIT_NAME: pulpit_name.value,
-				FACULTY: faculty.value
+				teacher: teacher.value,
+				teacher_name: teacher_name.value,
+				pulpit: pulpit.value
 			});
-			let response = await fetch("http://localhost:3000/api/pulpits", { method: "PUT", body: body });
+			let response = await fetch("http://localhost:3000/api/teachers", { method: "PUT", body: body });
 			if (!response.ok) {
 				let errmsg = await response.json();
-				action_msg.innerHTML = `${errmsg.code} ${errmsg.message}`;
+				action_msg.innerHTML = `${errmsg.errors[0].message}`;
 				return null;
 			}
 			action_msg.innerHTML = 'Обновлено!';
 		}
 
 		async function doDelete() {
-			let response = await fetch(`http://localhost:3000/api/pulpits/${pulpit.value}`, { method: "DELETE" });
+			let response = await fetch(`http://localhost:3000/api/teachers/${teacher.value}`, { method: "DELETE" });
 			if (!response.ok) {
 				let errmsg = await response.json();
 				action_msg.innerHTML = `${errmsg.code} ${errmsg.message}`;
 				return null;
 			}
-			action_msg.innerHTML = 'Удалено!';
+			if (await response.text()>0)
+				action_msg.innerHTML = 'Удалено!';
+			else
+				action_msg.innerHTML = 'Не Удалено!';
 		}
 	</script>
 </body>

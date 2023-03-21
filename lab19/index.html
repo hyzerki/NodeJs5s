@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Lab 14</title>
+</head>
+<style>
+    #get_output>div {
+        border: 1px black solid;
+        width: 300px;
+    }
+</style>
+
+<body>
+
+    <div>
+        <div>
+            <label>Получить все кафедры</label>
+            <input type="button" onclick="prevPage()" value="i--">
+            <span id="pages_buttons"></span>
+            <input type="button" onclick="nextPage()" value="i++">
+        </div>
+        <div id="get_output">
+
+        </div>
+    </div>
+
+
+    <script>
+        const get_output = document.getElementById("get_output");
+        const pulpit = document.getElementById("pulpit");
+        const pulpit_name = document.getElementById("pulpit_name");
+        const faculty = document.getElementById("faculty");
+        const action_msg = document.getElementById("action_msg");
+        const pages_buttons_container = document.getElementById("pages_buttons");
+        let currentPage = 0;
+
+
+
+
+        async function displayPages() {
+            let response = await fetch("http://localhost:3000/api/pulpits/count", { method: "GET" });
+            if (!response.ok) {
+                let errmsg = await response.json();
+                console.log(`${errmsg.code} ${errmsg.message}`);
+                return null;
+            }
+            let pagesAmount = await response.json();
+            pagesAmount = Math.ceil(Number.parseInt(pagesAmount._all) / 10);
+            pages_buttons_container.innerHTML = '';
+            for (let i = 0; i < pagesAmount; i++) {
+                pages_buttons_container.innerHTML += `<input type="button" onclick="getPage(${i+1})" value="${i}"/>`;
+            }
+        }
+
+        async function getPage(pageNumber){
+            let response = await fetch("http://localhost:3000/api/pulpits/" + (pageNumber), { method: "GET" });
+            if (!response.ok) {
+                return null;
+            }
+            let pulpits = await response.json();
+            if (pulpits.length === 0) {
+                return null;
+            }
+            get_output.innerHTML = '';
+            pulpits.forEach(pulpit => {
+                get_output.innerHTML += `<div>
+                                        <div>${pulpit.PULPIT}</div>
+                                        <div>${pulpit.PULPIT_NAME}</div>
+                                        <div>${pulpit.FACULTY}</div>
+                                        <div>Преподавателей:${pulpit._count.TEACHER_TEACHER_PULPITToPULPIT}</div>
+                                    <div>`;
+            });
+            currentPage=pageNumber;
+        }
+
+        async function nextPage() {
+            let response = await fetch("http://localhost:3000/api/pulpits/" + (currentPage + 1), { method: "GET" });
+            if (!response.ok) {
+                return null;
+            }
+            let pulpits = await response.json();
+            if (pulpits.length === 0) {
+                return null;
+            }
+            get_output.innerHTML = '';
+            pulpits.forEach(pulpit => {
+                get_output.innerHTML += `<div>
+                                        <div>${pulpit.PULPIT}</div>
+                                        <div>${pulpit.PULPIT_NAME}</div>
+                                        <div>${pulpit.FACULTY}</div>
+                                        <div>Преподавателей:${pulpit._count.TEACHER_TEACHER_PULPITToPULPIT}</div>
+                                    <div>`;
+            });
+            currentPage++;
+        }
+
+        async function prevPage() {
+            let response = await fetch("http://localhost:3000/api/pulpits/" + (currentPage - 1), { method: "GET" });
+            if (!response.ok) {
+                return null;
+            }
+            let pulpits = await response.json();
+            if (pulpits.length === 0) {
+                return null;
+            }
+            get_output.innerHTML = '';
+            pulpits.forEach(pulpit => {
+                get_output.innerHTML += `<div>
+                                        <div>${pulpit.PULPIT}</div>
+                                        <div>${pulpit.PULPIT_NAME}</div>
+                                        <div>${pulpit.FACULTY}</div>
+                                        <div>Преподавателей:${pulpit._count.TEACHER_TEACHER_PULPITToPULPIT}</div>
+                                    <div>`;
+            });
+            currentPage--;
+        }
+
+
+        displayPages();
+        nextPage();
+    </script>
+</body>
+
+</html>

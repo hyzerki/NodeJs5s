@@ -1,9 +1,8 @@
 import fs from "fs";
 import http from "http";
 import * as Sequelize from "sequelize";
-import { Model, Op } from "sequelize";
+import { Model, Op, Transaction } from "sequelize";
 import url from "url";
-
 
 const sequelize = new Sequelize.Sequelize("node_14", "node_14", "node14enjoyer", {
     dialect: "mssql",
@@ -188,12 +187,15 @@ const server = http.createServer(async (req, res) => {
                 fs.createReadStream("./index.html").pipe(res);
                 return;
             } else if (dUrl.path === "/api/transaction") {
-                let result = await sequelize.transaction(async (tran) => {
-                    await Faculty.create({ faculty: "QWE", faculty_name: "QWE" }, { transaction: tran });
-                    await Faculty.create({ faculty: "ZXC", faculty_name: "ZXC" }, { transaction: tran });
-                    return "Кайфарики";
-                });
-                res.write(JSON.stringify(result));
+                let tran = await sequelize.transaction();
+                let result;
+                await Auditorium.update({ auditorium_capacity: 0 }, { where: {}, transaction: tran });
+                setTimeout(async () => {
+                    await tran.rollback();
+                    result = await Auditorium.findAll();
+                    res.end(JSON.stringify(result));
+                }, 10000);
+                return;
             } else if (dUrl.path === "/api/faculties") {
                 res.write(JSON.stringify(await Faculty.findAll({ raw: true })));
             } else if (dUrl.path === "/api/pulpits") {

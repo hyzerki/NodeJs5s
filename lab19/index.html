@@ -50,11 +50,11 @@
             pagesAmount = Math.ceil(Number.parseInt(pagesAmount._all) / 10);
             pages_buttons_container.innerHTML = '';
             for (let i = 0; i < pagesAmount; i++) {
-                pages_buttons_container.innerHTML += `<input type="button" onclick="getPage(${i+1})" value="${i}"/>`;
+                pages_buttons_container.innerHTML += `<input type="button" onclick="getPage(${i + 1})" value="${i}"/>`;
             }
         }
 
-        async function getPage(pageNumber){
+        async function getPage(pageNumber) {
             let response = await fetch("http://localhost:3000/api/pulpits/" + (pageNumber), { method: "GET" });
             if (!response.ok) {
                 return null;
@@ -72,7 +72,7 @@
                                         <div>Преподавателей:${pulpit._count.TEACHER_TEACHER_PULPITToPULPIT}</div>
                                     <div>`;
             });
-            currentPage=pageNumber;
+            currentPage = pageNumber;
         }
 
         async function nextPage() {
@@ -116,7 +116,6 @@
             });
             currentPage--;
         }
-
 
         displayPages();
         nextPage();

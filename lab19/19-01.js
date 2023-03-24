@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import fs from "fs";
 import http from "http";
 import url from "url";
@@ -32,8 +32,19 @@ const server = http.createServer(async (req, res) => {
                 fs.createReadStream("./index.html").pipe(res);
                 return;
             } else if (dUrl.path === "/api/transaction") {
+                //todo: Затестить транзакцию
 
-                res.write(JSON.stringify(result));
+                await prisma.$transaction(async (tx) => {
+                    const updResult = await prisma.AUDITORIUM.updateMany({
+                        data: {
+                            AUDITORIUM_CAPACITY: {
+                                increment: 100,
+                            }
+                        }
+                    });
+
+                    throw new Error(`Откат`);
+                });
             } else if (dUrl.path === "/api/faculties") {
                 res.write(JSON.stringify(await prisma.FACULTY.findMany()));
             } else if (dUrl.path === "/api/pulpits") {
@@ -67,9 +78,40 @@ const server = http.createServer(async (req, res) => {
             }
         } else if (req.method === "POST" && bodyObject !== null) {
             if (dUrl.path === "/api/faculties") {
-                res.write(JSON.stringify(await prisma.FACULTY.create({ data: bodyObject })));
+                let result = await prisma.FACULTY.create({
+                    data: {
+                        FACULTY: bodyObject.FACULTY,
+                        FACULTY_NAME: bodyObject.FACULTY_NAME,
+                        PULPIT_PULPIT_FACULTYToFACULTY: !!bodyObject.PULPIT ? {
+                            createMany: {
+                                data: bodyObject.PULPIT
+                            }
+                        } : undefined
+                    },
+                });
+                res.write(JSON.stringify(result));
             } else if (dUrl.path === "/api/pulpits") {
-                res.write(JSON.stringify(await prisma.PULPIT.create({ data: bodyObject })));
+                //todo: оттестировать
+                let result = await prisma.PULPIT.create({
+                    data: {
+                        PULPIT: bodyObject.PULPIT,
+                        PULPIT_NAME: bodyObject.PULPIT_NAME,
+                        FACULTY_PULPIT_FACULTYToFACULTY:  {
+                            connectOrCreate: {
+                                where: { FACULTY: bodyObject.FACULTY },
+                                create: {
+                                    FACULTY: bodyObject.FACULTY,
+                                    FACULTY_NAME: bodyObject.FACULTY_NAME
+                                }
+                            }
+                        }
+                    },
+                    include: {
+                        FACULTY_PULPIT_FACULTYToFACULTY: true
+                    }
+                });
+
+                res.write(JSON.stringify(result));
             } else if (dUrl.path === "/api/subjects") {
                 res.write(JSON.stringify(await prisma.SUBJECT.create({ data: bodyObject })));
             } else if (dUrl.path === "/api/teachers") {

@@ -32,10 +32,10 @@ const server = http.createServer(async (req, res) => {
                 fs.createReadStream("./index.html").pipe(res);
                 return;
             } else if (dUrl.path === "/api/transaction") {
-                //todo: Затестить транзакцию
+                //fix была prisma.... стала ts...
 
                 await prisma.$transaction(async (tx) => {
-                    const updResult = await prisma.AUDITORIUM.updateMany({
+                    const updResult = await tx.AUDITORIUM.updateMany({
                         data: {
                             AUDITORIUM_CAPACITY: {
                                 increment: 100,
@@ -67,12 +67,14 @@ const server = http.createServer(async (req, res) => {
                 res.write(JSON.stringify(await prisma.AUDITORIUM.groupBy({ by: ["AUDITORIUM_TYPE", "AUDITORIUM_CAPACITY"], _count: { _all: true } })));
             } else if (dUrl.path === "/api/pulpits/count") {
                 res.write(JSON.stringify(await prisma.PULPIT.count({ select: { _all: true } })));
+            } else if (dUrl.path === "/api/fluent") {
+                res.write(JSON.stringify(await prisma.AUDITORIUM_TYPE.findUnique({ where: { AUDITORIUM_TYPE: "ЛК" } }).AUDITORIUM_AUDITORIUM_AUDITORIUM_TYPEToAUDITORIUM_TYPE()));
             } else if (new RegExp(/^\/api\/pulpits\/\d+$/).test(dUrl.path)) {
                 res.write(JSON.stringify(await prisma.PULPIT.findMany({ skip: (parseInt(pathParts[3]) - 1) * 10, take: 10, include: { _count: { select: { TEACHER_TEACHER_PULPITToPULPIT: true } } } })));
             } else if (new RegExp(/^\/api\/faculties\/\S+\/subjects$/).test(dUrl.path)) {
                 res.write(JSON.stringify(await prisma.FACULTY.findUnique({ where: { FACULTY: pathParts[3] }, select: { FACULTY: true, PULPIT_PULPIT_FACULTYToFACULTY: { select: { SUBJECT_SUBJECT_PULPITToPULPIT: { select: { SUBJECT_NAME: true } } } } } })));
             } else if (new RegExp(/^\/api\/auditoriumtypes\/\S+\/auditoriums$/).test(dUrl.path)) {
-                res.write(JSON.stringify(await prisma.AUDITORIUM_TYPE.findUnique({ where: { AUDITORIUM_TYPE: pathParts[3] } }).AUDITORIUM_AUDITORIUM_AUDITORIUM_TYPEToAUDITORIUM_TYPE()));
+                res.write(JSON.stringify(await prisma.AUDITORIUM_TYPE.findUnique({ select: { AUDITORIUM_TYPE: true, AUDITORIUM_AUDITORIUM_AUDITORIUM_TYPEToAUDITORIUM_TYPE: { select: { AUDITORIUM_NAME: true } } }, where: { AUDITORIUM_TYPE: pathParts[3] } })));
             } else {
                 res.statusCode = 404;
             }
@@ -91,12 +93,12 @@ const server = http.createServer(async (req, res) => {
                 });
                 res.write(JSON.stringify(result));
             } else if (dUrl.path === "/api/pulpits") {
-                //todo: оттестировать
+
                 let result = await prisma.PULPIT.create({
                     data: {
                         PULPIT: bodyObject.PULPIT,
                         PULPIT_NAME: bodyObject.PULPIT_NAME,
-                        FACULTY_PULPIT_FACULTYToFACULTY:  {
+                        FACULTY_PULPIT_FACULTYToFACULTY: {
                             connectOrCreate: {
                                 where: { FACULTY: bodyObject.FACULTY },
                                 create: {

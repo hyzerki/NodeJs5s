@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model application {
+  application_id      BigInt  @id(map: "PK__applicat__3BCBDCF2A125A258") @default(autoincrement())
+  application_text    String
+  application_is_seen Boolean @default(false, map: "DF__applicati__appli__30F848ED")
+  person_id           Int
+  vacancy_id          Int
+  person              person  @relation(fields: [person_id], references: [person_id], onUpdate: NoAction, map: "FK__applicati__perso__31EC6D26")
+  vacancy             vacancy @relation(fields: [vacancy_id], references: [vacancy_id], onUpdate: NoAction, map: "FK__applicati__vacan__32E0915F")
+}
+
+model company {
+  company_id          Int       @id(map: "PK__company__3E26723599A699EF") @default(autoincrement())
+  company_name        String    @db.NVarChar(30)
+  company_description String?   @db.NVarChar(500)
+  person              person[]
+  vacancy             vacancy[]
+}
+
+model person {
+  person_id      Int           @id(map: "PK__person__543848DF0C8B1E3B") @default(autoincrement())
+  person_email   String        @unique(map: "UQ__person__62BC1640DD30B3ED") @db.NVarChar(255)
+  person_name    String        @db.NVarChar(30)
+  person_surname String        @db.NVarChar(30)
+  company_id     Int?
+  application    application[]
+  company        company?      @relation(fields: [company_id], references: [company_id], onDelete: NoAction, onUpdate: NoAction, map: "FK__person__company___2E1BDC42")
+}
+
+model preffered_skill {
+  preffered_skill_id Int     @id(map: "PK__preffere__2FB2ACB9E3B1D6CF") @default(autoincrement())
+  vacancy_id         Int
+  skill_name         String  @db.NVarChar(15)
+  vacancy            vacancy @relation(fields: [vacancy_id], references: [vacancy_id], onUpdate: NoAction, map: "FK__preffered__vacan__2A4B4B5E")
+}
+
+model vacancy {
+  vacancy_id          Int               @id(map: "PK__vacancy__C04F3A6667185D3C") @default(autoincrement())
+  vacancy_header      String            @db.NVarChar(50)
+  vacancy_description String
+  vacancy_salary      Int?
+  is_vacancy_active   Boolean           @default(true, map: "DF__vacancy__is_vaca__267ABA7A")
+  company_id          Int
+  application         application[]
+  preffered_skill     preffered_skill[]
+  company             company           @relation(fields: [company_id], references: [company_id], onUpdate: NoAction, map: "FK__vacancy__company__276EDEB3")
+}

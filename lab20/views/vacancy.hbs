@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+</head>
+
+
+<body>
+    {{#if many}}
+    <div><a href="/">Назад</a></div>
+    {{/if}}
+
+
+    {{#if vacancy}}
+    <div><a href="/vacancy/">Назад</a></div>
+    <div>
+        <div>
+            {{vacancy.vacancy_header}}
+        </div>
+        <div>
+            {{vacancy.vacancy_description}}
+        </div>
+        <div>
+            {{vacancy.vacancy_salary}}
+        </div>
+        <div>
+            {{vacancy.is_vacancy_active}}
+        </div>
+        <div>
+            {{vacancy.company_id}}
+        </div>
+    </div>
+    {{/if}}
+
+
+
+
+    {{#if vacancy}}
+    <div>
+        <label for="vacancy_id">Айди</label>
+        <input name="vacancy_id" id="vacancy_id" disabled type="number" value="{{vacancy.vacancy_id}}">
+    </div>
+    {{/if}}
+    <div>
+        <label for="vacancy_header">Имя</label>
+        <input name="vacancy_header" required id="vacancy_header" type="text" value="{{vacancy.vacancy_header}}">
+    </div>
+    <div>
+        <label for="vacancy_description">Описание</label>
+        <input name="vacancy_description" required id="vacancy_description" type="text"
+            value="{{vacancy.vacancy_description}}">
+    </div>
+    <div>
+        <label for="vacancy_salary">Зарплата</label>
+        <input name="vacancy_salary" id="vacancy_salary" type="number" value="{{vacancy.vacancy_salary}}">
+    </div>
+    <div>
+        <label for="is_vacancy_active">Активна</label>
+        <input name="is_vacancy_active" id="is_vacancy_active" type="checkbox" {{#if
+            vacancy.is_vacancy_active}}checked{{/if}}>
+    </div>
+    <div>
+        <label for="company_id">Айди компании</label>
+        <input name="company_id" required id="company_id" type="number" value="{{vacancy.company_id}}">
+    </div>
+    <div>
+        {{#if vacancy}}
+        <input onclick="send_update()" type="button" value="Изменить">
+        <input onclick="send_delete()" type="button" value="Удалить">
+        {{/if}}
+        {{#if many}}
+        <input onclick="send_add()" type="button" value="Добавить">
+        {{/if}}
+    </div>
+
+
+    {{#if many}}
+    {{#each vacancyList}}
+    <hr>
+    <a href="/vacancy/{{this.vacancy_id}}">
+        <div>
+            {{this.vacancy_header}}
+        </div>
+        <div>
+            {{this.vacancy_description}}
+        </div>
+        <div>
+            {{this.vacancy_salary}}
+        </div>
+        <div>
+            {{this.is_vacancy_active}}
+        </div>
+        <div>
+            {{this.company_id}}
+        </div>
+
+    </a>
+
+
+    {{/each}}
+    {{/if}}
+
+    <script>
+        let vacancy_id = document.getElementById("vacancy_id");
+        let vacancy_header = document.getElementById("vacancy_header");
+        let vacancy_description = document.getElementById("vacancy_description");
+        let vacancy_salary = document.getElementById("vacancy_salary");
+        let is_vacancy_active = document.getElementById("is_vacancy_active");
+        let company_id = document.getElementById("company_id");
+
+        async function send_add() {
+            let body = JSON.stringify({
+                vacancy_header: vacancy_header.value,
+                vacancy_description: vacancy_description.value,
+                vacancy_salary: parseInt(vacancy_salary.value),
+                is_vacancy_active: is_vacancy_active.checked,
+                company_id: parseInt(company_id.value),
+            });
+            let response = await fetch("http://localhost:3000/vacancy/", { method: "POST", body: body });
+            if (!response.ok) {
+                let errmsg = await response.text();
+                alert(errmsg);
+                return;
+            }
+            window.location.reload();
+        }
+
+        async function send_update() {
+            let data = JSON.stringify({
+                vacancy_header: vacancy_header.value,
+                vacancy_description: vacancy_description.value,
+                vacancy_salary: parseInt(vacancy_salary.value),
+                is_vacancy_active: is_vacancy_active.checked,
+                company_id: parseInt(company_id.value),
+            });
+            let response = await fetch(`http://localhost:3000/vacancy/${vacancy_id.value}`, { method: "PUT", body: data });
+            if (!response.ok) {
+                let errmsg = await response.text();
+                alert(errmsg);
+                return;
+            }
+            window.location.reload();
+        }
+
+        async function send_delete() {
+            let response = await fetch(`http://localhost:3000/vacancy/${vacancy_id.value}`, { method: "DELETE" });
+            if (!response.ok) {
+                let errmsg = await response.text();
+                alert(errmsg);
+                return;
+            }
+            alert("Удалено!");
+            window.location.href = "/vacancy";
+        }
+    </script>
+
+
+
+</body>
+
+</html>

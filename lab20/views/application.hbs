@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+</head>
+
+
+<body>
+    {{#if many}}
+    <div><a href="/">Назад</a></div>
+    {{/if}}
+
+
+    {{#if application}}
+    <div><a href="/application/">Назад</a></div>
+    <div>
+        <div>
+            {{application.application_text}}
+        </div>
+        <div>
+            {{application.application_is_seen}}
+        </div>
+        <div>
+            {{application.person_id}}
+        </div>
+        <div>
+            {{application.vacancy_id}}
+        </div>
+    </div>
+    {{/if}}
+
+
+
+
+    {{#if application}}
+    <div>
+        <label for="application_id">Айди</label>
+        <input name="application_id" id="application_id" disabled type="number" value="{{application.application_id}}">
+    </div>
+    {{/if}}
+    <div>
+        <label for="application_text">Текст</label>
+        <input name="application_text" required id="application_text" type="text"
+            value="{{application.application_text}}">
+    </div>
+    <div>
+        <label for="application_is_seen">Просмотрено</label>
+        <input name="application_is_seen" id="application_is_seen" type="checkbox" {{#if
+            application.application_is_seen}}checked{{/if}}>
+    </div>
+    <div>
+        <label for="person_id">Айди человека</label>
+        <input name="person_id" required id="person_id" type="number" value="{{application.person_id}}">
+    </div>
+    <div>
+        <label for="vacancy_id">Айди вакансии</label>
+        <input name="vacancy_id" required id="vacancy_id" type="number" value="{{application.vacancy_id}}">
+    </div>
+    <div>
+        {{#if application}}
+        <input onclick="send_update()" type="button" value="Изменить">
+        <input onclick="send_delete()" type="button" value="Удалить">
+        {{/if}}
+        {{#if many}}
+        <input onclick="send_add()" type="button" value="Добавить">
+        {{/if}}
+    </div>
+
+
+    {{#if many}}
+    {{#each applicationList}}
+    <hr>
+    <a href="/application/{{this.application_id}}">
+        <div>
+            {{this.application_text}}
+        </div>
+        <div>
+            {{this.application_is_seen}}
+        </div>
+        <div>
+            {{this.person_id}}
+        </div>
+        <div>
+            {{this.vacancy_id}}
+        </div>
+    </a>
+
+
+    {{/each}}
+    {{/if}}
+
+    <script>
+        let application_id = document.getElementById("application_id");
+        let application_text = document.getElementById("application_text");
+        let application_is_seen = document.getElementById("application_is_seen");
+        let person_id = document.getElementById("person_id");
+        let vacancy_id = document.getElementById("vacancy_id");
+
+        async function send_add() {
+            let body = JSON.stringify({
+                application_text: application_text.value,
+                application_is_seen: application_is_seen.checked,
+                person_id: parseInt(person_id.value),
+                vacancy_id: parseInt(vacancy_id.value),
+            });
+            let response = await fetch("http://localhost:3000/application/", { method: "POST", body: body });
+            if (!response.ok) {
+                let errmsg = await response.text();
+                alert(errmsg);
+                return;
+            }
+            window.location.reload();
+        }
+
+        async function send_update() {
+            let data = JSON.stringify({
+                application_text: application_text.value,
+                application_is_seen: application_is_seen.checked,
+                person_id: parseInt(person_id.value),
+                vacancy_id: parseInt(vacancy_id.value),
+            });
+            let response = await fetch(`http://localhost:3000/application/${application_id.value}`, { method: "PUT", body: data });
+            if (!response.ok) {
+                let errmsg = await response.text();
+                alert(errmsg);
+                return;
+            }
+            window.location.reload();
+        }
+
+        async function send_delete() {
+            let response = await fetch(`http://localhost:3000/application/${application_id.value}`, { method: "DELETE" });
+            if (!response.ok) {
+                let errmsg = await response.text();
+                alert(errmsg);
+                return;
+            }
+            alert("Удалено!");
+            window.location.href = "/application";
+        }
+    </script>
+
+
+
+</body>
+
+</html>

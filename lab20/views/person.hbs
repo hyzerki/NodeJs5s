@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+</head>
+
+
+<body>
+    {{#if many}}
+    <div><a href="/">Назад</a></div>
+    {{/if}}
+
+
+    {{#if person}}
+    <div><a href="/person/">Назад</a></div>
+    <div>
+        <div>
+            {{person.person_email}}
+        </div>
+        <div>
+            {{person.person_name}}
+        </div>
+        <div>
+            {{person.person_surname}}
+        </div>
+        <div>
+            {{person.company_id}}
+        </div>
+
+    </div>
+    {{/if}}
+
+
+
+
+    {{#if person}}
+    <div>
+        <label for="person_id">Айди</label>
+        <input name="person_id" id="person_id" disabled type="number" value="{{person.person_id}}">
+    </div>
+    {{/if}}
+    <div>
+        <label for="person_name">Имя</label>
+        <input name="person_name" required id="person_name" type="text" value="{{person.person_name}}">
+    </div>
+    <div>
+        <label for="person_surname">Фамилия</label>
+        <input name="person_surname" required id="person_surname" type="text" value="{{person.person_surname}}">
+    </div>
+    <div>
+        <label for="person_email">Почта</label>
+        <input name="person_email" required id="person_email" type="text" value="{{person.person_email}}">
+    </div>
+    <div>
+        <label for="company_id">Айди компании</label>
+        <input name="company_id" id="company_id" type="number" value="{{person.company_id}}">
+    </div>
+    <div>
+        {{#if person}}
+        <input onclick="send_update()" type="button" value="Изменить">
+        <input onclick="send_delete()" type="button" value="Удалить">
+        {{/if}}
+        {{#if many}}
+        <input onclick="send_add()" type="button" value="Добавить">
+        {{/if}}
+    </div>
+
+
+    {{#if many}}
+    {{#each personList}}
+    <hr>
+    <a href="/person/{{this.person_id}}">
+        <div>
+            {{this.person_email}}
+        </div>
+        <div>
+            {{this.person_name}}
+        </div>
+
+    </a>
+
+
+    {{/each}}
+    {{/if}}
+
+    <script>
+        let person_id = document.getElementById("person_id");
+        let person_name = document.getElementById("person_name");
+        let person_surname = document.getElementById("person_surname");
+        let person_email = document.getElementById("person_email");
+        let company_id = document.getElementById("company_id");
+
+        async function send_add() {
+            let body = JSON.stringify({
+                person_name: person_name.value,
+                person_surname: person_surname.value,
+                person_email: person_email.value,
+                company_id: parseInt(company_id.value),
+            });
+            let response = await fetch("http://localhost:3000/person/", { method: "POST", body: body });
+            if (!response.ok) {
+                let errmsg = await response.text();
+                alert(errmsg);
+                return;
+            }
+            window.location.reload();
+        }
+
+        async function send_update() {
+            let data = JSON.stringify({
+                person_name: person_name.value,
+                person_surname: person_surname.value,
+                person_email: person_email.value,
+                company_id: parseInt(company_id.value),
+            });
+            let response = await fetch(`http://localhost:3000/person/${person_id.value}`, { method: "PUT", body: data });
+            if (!response.ok) {
+                let errmsg = await response.text();
+                alert(errmsg);
+                return;
+            }
+            window.location.reload();
+        }
+
+        async function send_delete() {
+            let response = await fetch(`http://localhost:3000/person/${person_id.value}`, { method: "DELETE" });
+            if (!response.ok) {
+                let errmsg = await response.text();
+                alert(errmsg);
+                return;
+            }
+            alert("Удалено!");
+            window.location.href = "/person";
+        }
+    </script>
+
+
+
+</body>
+
+</html>

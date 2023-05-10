@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+</head>
+
+
+<body>
+    {{#if many}}
+    <div><a href="/">Назад</a></div>
+    {{/if}}
+
+
+    {{#if company}}
+    <div><a href="/company/">Назад</a></div>
+    <div>
+        <div>
+            {{company.company_name}}
+        </div>
+        <div>
+            {{company.company_description}}
+        </div>
+    </div>
+    {{/if}}
+
+
+
+
+    {{#if company}}
+    <div>
+        <label for="company_id">Айди</label>
+        <input name="company_id" id="company_id" disabled type="number" value="{{company.company_id}}">
+    </div>
+    {{/if}}
+    <div>
+        <label for="company_name">Имя</label>
+        <input name="company_name" required id="company_name" type="text" value="{{company.company_name}}">
+    </div>
+    <div>
+        <label for="company_description">Описание</label>
+        <input name="company_description" required id="company_description" type="text"
+            value="{{company.company_description}}">
+    </div>
+    <div>
+        {{#if company}}
+        <input onclick="send_update()" type="button" value="Изменить">
+        <input onclick="send_delete()" type="button" value="Удалить">
+        {{/if}}
+        {{#if many}}
+        <input onclick="send_add()" type="button" value="Добавить">
+        {{/if}}
+    </div>
+
+
+    {{#if many}}
+    {{#each companyList}}
+    <hr>
+    <a href="/company/{{this.company_id}}">
+        <div>
+            {{this.company_name}}
+        </div>
+        <div>
+            {{this.company_description}}
+        </div>
+
+    </a>
+
+
+    {{/each}}
+    {{/if}}
+
+    <script>
+        let company_id = document.getElementById("company_id");
+        let company_name = document.getElementById("company_name");
+        let company_description = document.getElementById("company_description");
+
+        async function send_add() {
+            let body = JSON.stringify({
+                company_name: company_name.value,
+                company_description: company_description.value,
+            });
+            let response = await fetch("http://localhost:3000/company/", { method: "POST", body: body });
+            if (!response.ok) {
+                let errmsg = await response.text();
+                alert(errmsg);
+                return;
+            }
+            window.location.reload();
+        }
+
+        async function send_update() {
+            let data = JSON.stringify({
+                company_name: company_name.value,
+                company_description: company_description.value,
+            });
+            let response = await fetch(`http://localhost:3000/company/${company_id.value}`, { method: "PUT", body: data });
+            if (!response.ok) {
+                let errmsg = await response.text();
+                alert(errmsg);
+                return;
+            }
+            window.location.reload();
+        }
+
+        async function send_delete() {
+            let response = await fetch(`http://localhost:3000/company/${company_id.value}`, { method: "DELETE" });
+            if (!response.ok) {
+                let errmsg = await response.text();
+                alert(errmsg);
+                return;
+            }
+            alert("Удалено!");
+            window.location.href = "/company";
+        }
+    </script>
+
+
+
+</body>
+
+</html>

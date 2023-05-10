@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+</head>
+
+
+<body>
+    {{#if many}}
+    <div><a href="/">Назад</a></div>
+    {{/if}}
+
+
+    {{#if skill}}
+    <div><a href="/skill/">Назад</a></div>
+    <div>
+        <div>
+            {{skill.skill_name}}
+        </div>
+        <div>
+            {{skill.vacancy_id}}
+        </div>
+    </div>
+    {{/if}}
+
+
+
+
+    {{#if skill}}
+    <div>
+        <label for="preffered_skill_id">Айди</label>
+        <input name="preffered_skill_id" id="preffered_skill_id" disabled type="number" value="{{skill.preffered_skill_id}}">
+    </div>
+    {{/if}}
+    <div>
+        <label for="skill_name">Навык</label>
+        <input name="skill_name" required id="skill_name" type="text"
+            value="{{skill.skill_name}}">
+    </div>
+    <div>
+        <label for="vacancy_id">Айди вакансии</label>
+        <input name="vacancy_id" required id="vacancy_id" type="number" value="{{skill.vacancy_id}}">
+    </div>
+    <div>
+        {{#if skill}}
+        <input onclick="send_update()" type="button" value="Изменить">
+        <input onclick="send_delete()" type="button" value="Удалить">
+        {{/if}}
+        {{#if many}}
+        <input onclick="send_add()" type="button" value="Добавить">
+        {{/if}}
+    </div>
+
+
+    {{#if many}}
+    {{#each skillList}}
+    <hr>
+    <a href="/skill/{{this.preffered_skill_id}}">
+        <div>
+            {{this.skill_name}}
+        </div>
+        <div>
+            {{this.vacancy_id}}
+        </div>
+    </a>
+
+
+    {{/each}}
+    {{/if}}
+
+    <script>
+        let preffered_skill_id = document.getElementById("preffered_skill_id");
+        let skill_name = document.getElementById("skill_name");
+        let vacancy_id = document.getElementById("vacancy_id");
+
+        async function send_add() {
+            let body = JSON.stringify({
+                skill_name: skill_name.value,
+                vacancy_id: parseInt(vacancy_id.value),
+            });
+            let response = await fetch("http://localhost:3000/skill/", { method: "POST", body: body });
+            if (!response.ok) {
+                let errmsg = await response.text();
+                alert(errmsg);
+                return;
+            }
+            window.location.reload();
+        }
+
+        async function send_update() {
+            let data = JSON.stringify({
+                skill_name: skill_name.value,
+                vacancy_id: parseInt(vacancy_id.value),
+            });
+            let response = await fetch(`http://localhost:3000/skill/${preffered_skill_id.value}`, { method: "PUT", body: data });
+            if (!response.ok) {
+                let errmsg = await response.text();
+                alert(errmsg);
+                return;
+            }
+            window.location.reload();
+        }
+
+        async function send_delete() {
+            let response = await fetch(`http://localhost:3000/skill/${preffered_skill_id.value}`, { method: "DELETE" });
+            if (!response.ok) {
+                let errmsg = await response.text();
+                alert(errmsg);
+                return;
+            }
+            alert("Удалено!");
+            window.location.href = "/skill";
+        }
+    </script>
+
+
+
+</body>
+
+</html>

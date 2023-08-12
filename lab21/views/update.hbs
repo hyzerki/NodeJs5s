@@ -1,0 +1,20 @@
+<form action="/update?id={{query.id}}" method="post">
+    <div style="padding-right: 8px; display:flex">
+        <div>
+            <input id="nameInput" name="name" style="width: 100%; font-size: 2em;" type="text" value="{{phone.name}}">
+        </div>
+        <div>
+            <input id="numberInput" name="number" style="width: 100%; font-size: 2em; " type="text" value="{{phone.number}}">
+        </div>
+    </div>
+
+    <div style="display: flex; justify-items: stretch;">
+        <input type="submit" style="border: 1px solid black; padding: 10px; width: 100%;" value="Сохранить">
+</form>
+<div style="width: 100%;">
+    <form action="/delete?id={{query.id}}" method="post">
+        <input id="deleteButton" type="submit" style="border: 1px solid black; padding: 10px; width: 100%;" value="Удалить">
+    </form>
+</div>
+{{decline}}
+</div>

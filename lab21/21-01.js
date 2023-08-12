@@ -16,7 +16,7 @@ app.engine("hbs", expressHbs.engine({
     defaultLayout: "layout",
     extname: "hbs",
     helpers: {
-        decline: function(){
+        decline: function () {
             return new hbs.SafeString("<input type=\"button\" style=\"border: 1px solid black; padding: 10px; width: 100%;\" onclick=\"location.href='/';\" value=\"Отказаться\" />");
         }
     }
@@ -57,13 +57,13 @@ app.get("/", (req, res) => {
 });
 
 app.get("/add", (req, res) => {
-    res.render("add.hbs");
+    res.render("add.hbs", { disallowUpdate: true });
 });
 
 app.get("/update", (req, res) => {
     let phones = getPhonesFromFile();
 
-    res.render("update.hbs", { query: req.query, phone: phones[parseInt(req.query.id)] });
+    res.render("update.hbs", { query: req.query, phone: phones[parseInt(req.query.id)], disallowUpdate: true });
 });
 
 app.post("/add", (req, res) => {
@@ -90,4 +90,3 @@ app.post("/delete", (req, res) => {
 app.listen(PORT);
 
 console.log("Server running on port " + PORT);
-console.log(`http://localhost:${PORT}/`);

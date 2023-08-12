@@ -1,11 +1,12 @@
 <div style="padding: 5px; max-height: 200px; overflow-y: auto; margin-bottom: 10px; border: 1px solid black">
     {{#each phones}}
     <div style=" border: 1px solid black;">
-        <a href="/update?id={{@index}}" style="width: inherit; height: 100%;">
+        <a {{#if ../disallowUpdate }} disabled {{/if}} href="/update?id={{@index}}" style="width: inherit; height: 100%;">
             <div style="margin:10px; height: 100%;">
                 {{this.name}} {{this.number}}
             </div>
         </a>
     </div>
+    
     {{/each}}
 </div>

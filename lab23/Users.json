@@ -1,0 +1,17 @@
+[
+    {
+        "user": "nikita",
+        "password": "qwe123",
+        "age": 21
+    },
+    {
+        "user": "roma",
+        "password": "123",
+        "age": 20
+    },
+    {
+        "user": "pasha",
+        "password": "123",
+        "age": 20
+    }
+]

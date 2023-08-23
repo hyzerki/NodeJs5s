@@ -1,0 +1,34 @@
+{
+    "cookie": {
+        "originalMaxAge": null,
+        "expires": null,
+        "httpOnly": true,
+        "path": "/"
+    },
+    "passport": {
+        "user": {
+            "profile": {
+                "id": "104264221137196189978",
+                "displayName": "hyzerki",
+                "name": {
+                    "givenName": "hyzerki"
+                },
+                "photos": [
+                    {
+                        "value": "https://lh3.googleusercontent.com/a/AAcHTteVQYKRWDNPRJu1Xg-yp6H1UCXWzpTasfGtUYHLHPrWRA=s96-c"
+                    }
+                ],
+                "provider": "google",
+                "_raw": "{\n \"sub\": \"104264221137196189978\",\n \"name\": \"hyzerki\",\n \"given_name\": \"hyzerki\",\n \"picture\": \"https://lh3.googleusercontent.com/a/AAcHTteVQYKRWDNPRJu1Xg-yp6H1UCXWzpTasfGtUYHLHPrWRA\\u003ds96-c\",\n \"locale\": \"ru\"\n}",
+                "_json": {
+                    "sub": "104264221137196189978",
+                    "name": "hyzerki",
+                    "given_name": "hyzerki",
+                    "picture": "https://lh3.googleusercontent.com/a/AAcHTteVQYKRWDNPRJu1Xg-yp6H1UCXWzpTasfGtUYHLHPrWRA=s96-c",
+                    "locale": "ru"
+                }
+            },
+            "token": "ya29.a0AfB_byDE5ieB9tENxecUb2CX0ybfDpxw6_2B7x2J7xMMxV4vn0lSXyc1bSoc26Xj72u6SlXogodNZz_SvBV4dHVKmGC1kRHWSqkq9KUSGQdf7yMHdPG77J-fgXRbSnp6zvexMJvzbIEt3O5fIAQHVpDp0uXUlcWxlK3sjgaCgYKAUYSARASFQHsvYlsjwr4XOG5H0s0VLgmHS7jCg0173"
+        }
+    }
+}

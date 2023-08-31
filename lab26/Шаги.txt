@@ -1,0 +1,31 @@
+CA
+Создаётся закрытый ключ с помощью которого будут подписаны все сертификаты
+openssl genrsa -out CAPrivate.key 2048
+
+Генерирует для CA x509 сертификат
+openssl req -x509 -new -key CAPrivate.key -days 365 -out CA.crt
+
+Можно посмотреть, что данные коррекртны
+openssl x509 -text -in CA.crt
+
+Получаем от Resource запрос за подпись сертификата server.csr
+и генерируем сертификат на основе запроса
+
+openssl x509 -req -in server.csr -CA CA.crt -CAkey CAPrivate.key -CAcreateserial -out server.crt -days 365 -extensions SAN -extfile openssl.cnf
+
+и передаём 2 сертификата обратно resource: CA.crt и server.crt
+
+
+Resource
+Генерируем закрытый ключ для сервера
+openssl genrsa -out server.key 2048
+
+Генерируем запрос CSR(Certificate Sgning Rquest) с использованием закрытого ключа сервера
+openssl req -new -key server.key -subj "/CN=RS-LAB26-MNS" -out server.csr
+
+Также можно посмотреть всё ли корректно в запросе
+openssl req -text -in server.csr
+
+после этого передаём запрос CA и получаем 2 сертификата
+
+

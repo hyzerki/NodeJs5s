@@ -1,0 +1,5 @@
+[SAN]
+subjectAltName = @alt_names
+[alt_names]
+DNS.1 = LAB26-MNS
+DNS.2 = MNS

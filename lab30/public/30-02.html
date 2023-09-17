@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Wasm HTML</title>
+    </head>
+    <body>
+        <div>sum(3,4)</div>
+        <div id="rsum"></div>
+        <div>sub(3,4)</div>
+        <div id="rsub"></div>
+        <div>muls(3,4)</div>
+        <div id="rmul"></div>
+
+        <script type="module">
+            const res = fetch("http://localhost:3000/public/func.wasm");
+            const {module, instance} = await WebAssembly.instantiateStreaming(res);
+            rsum.innerHTML = instance.exports.sum(3,4);
+            rsub.innerHTML = instance.exports.sub(3,4);
+            rmul.innerHTML = instance.exports.mul(3,4);
+        </script>
+    </body>
+</html>

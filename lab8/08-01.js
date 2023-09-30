@@ -7,6 +7,9 @@ const xmlbuilder = require("xmlbuilder");
 const stat = require("./m07-01")("./static");
 const mp = require("multiparty");
 
+const server1Sockets = new Set();
+
+
 
 const getHeaders = function (req) {
     let rs = "";
@@ -61,7 +64,7 @@ const server = http.createServer(async (request, response) => {
             }
         }
         response.writeHead(200);
-        response.end(request.url);
+        response.end("error " + request.url);
     } else if (new RegExp(/^\/parameter\/[a-zA-Z0-9]+\/[a-zA-Z0-9]+$/).test(urlPathname) && request.method === "GET") {
         let parts = urlPathname.split("/");
         let x = parseInt(parts[2]), y = parseInt(parts[3]);
@@ -75,11 +78,18 @@ const server = http.createServer(async (request, response) => {
             return;
         }
         response.writeHead(400);
-        response.end("Error: wrong params");
+        response.end(request.url);
     } else if (urlPathname === "/close" && request.method === "GET") {
-        response.writeHead(200);
+        response.writeHead(200, { "Content-Type": "text/html; charset=utf8" });
         response.end("Сервер закроется через 10 секнуд");
-        setTimeout(() => { server.close() }, 10 * 1000);
+        request.socket.destroy();
+        setTimeout(() => {
+            for (const socket of server1Sockets.values()) {
+                socket.destroy();
+            }
+            server.close();
+            setImmediate(function(){server.emit('close')});
+        }, 10 * 1000);
     } else if (urlPathname === "/socket" && request.method === "GET") {
         response.writeHead(200, { "Content-Type": "application/json" });
         response.end(JSON.stringify({
@@ -91,11 +101,12 @@ const server = http.createServer(async (request, response) => {
     } else if (urlPathname === "/req-data" && request.method === "GET") {
         let cnt = 0;
         for await (const chunk of request) {
+            console.log(chunk.toString());
             console.log("NEW CHUNK " + (++cnt));
         }
         response.end(cnt.toString());
     } else if (urlPathname === "/resp-status" && request.method === "GET") {
-        if (url.parse(request.url, true).query.code != undefined && url.parse(request.url, true).query.mess != undefined) {
+        if (url.parse(request.url, true).query.code === undefined || url.parse(request.url, true).query.mess === undefined) {
             response.writeHead(400);
             response.end()
             return;
@@ -107,9 +118,9 @@ const server = http.createServer(async (request, response) => {
             return;
         }
 
-        res.statusCode = code;
-        res.statusMessage = message;
-        res.end(message);
+        response.statusCode = code;
+        response.statusMessage = message;
+        response.end();
     } else if (urlPathname === "/formparameter") {
         if (request.method === "GET") {
             fs.createReadStream("formparameter.html").pipe(response);
@@ -224,7 +235,7 @@ const server = http.createServer(async (request, response) => {
         response.end("Page not found");
     }
     //response.end();
-    /*
+    /*enctype
         response.writeHead(200, { "Content-Type": "application/json" });
         response.end(JSON.stringify({
             "server adress": request.socket.localAddress,
@@ -235,7 +246,11 @@ const server = http.createServer(async (request, response) => {
 });
 
 server.on("connection", (socket) => {
-    console.log(`${new Date().toTimeString().substring(0, 8)}.${new Date().getMilliseconds()} New connection established for ${server.keepAliveTimeout} ms. `, ++connectionsCount)
+    console.log(`${new Date().toTimeString().substring(0, 8)}.${new Date().getMilliseconds()} New connection established for ${server.keepAliveTimeout} ms. `, ++connectionsCount);
+    server1Sockets.add(socket);
+    socket.on("close", () => {
+        server1Sockets.delete(socket);
+    });
 })
 
 

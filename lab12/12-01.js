@@ -227,7 +227,7 @@ let server = http.createServer(function (req, res) {
 
 
 try{
-    fs.watch('./file/Studentlist.json', (event, f)=> {
+    fs.watch('./file/', (event, f)=> {
         if(f){
             wsserver.emit("Change file", "File changed");
         }

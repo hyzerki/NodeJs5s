@@ -1,12 +1,15 @@
-const tsRoute = require('express').Router();
+import express from 'express';
 
-let data = require('./phones.json') || [];
+const tsRoute = express.Router();
+
+import data from "./phones.json" assert { "type": "json" };
 
 tsRoute.get('/', (request, response) => {
     response.json(data);
 });
 
 tsRoute.post('/', (request, response) => {
+
     const {id, name, phone} = request.body;
     const newTs = {id, name, phone};
     console.log(newTs)
@@ -36,15 +39,17 @@ tsRoute.delete('/', (request, response) => {
     console.log(request.query.id)
     console.log(data)
     const target = data.find(ts => ts.id === +request.query.id);
+    let identify = data.findIndex(ts => ts.id === +request.query.id);
     console.log(target)
     if (request.query.id && target) {
-        data = data.filter((ts) => ts.id !== target.id);
-        console.log(data)
-        response.json(data.find(ts => ts.id === +request.query.id));
+        let deleted = data.splice(identify,1);
+        // data = data.filter((ts) => ts.id !== target.id);
+        console.log(deleted)
+        response.json(deleted);
     } else {
         response.status(400).end();
     }
 });
 
 
-module.exports = tsRoute;
+export default tsRoute;

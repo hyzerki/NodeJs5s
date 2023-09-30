@@ -22,7 +22,10 @@ const redis = createClient();
 await redis.connect();
 
 const sequelize = new Sequelize("lab23", "postgres", "postgres", {
-    dialect: "postgres"
+    dialect: "postgres",
+    define: {
+        timestamps: false
+    }
 });
 
 const User = sequelize.define("user", {
@@ -48,7 +51,7 @@ const User = sequelize.define("user", {
 });
 
 try {
-    await sequelize.sync({ force: true });
+    await sequelize.sync();
 } catch (e) {
     console.log(e);
     exit(-1);
@@ -61,7 +64,7 @@ app.use(cookieParser());
 
 function authorize(req, res, next) {
     if (!!!req.cookies.access_token) {
-        res.status(401).send("Auth header not provided");
+        res.status(401).send("Auth cookie not provided");
         return;
     }
     let token = req.cookies.access_token;
@@ -91,8 +94,8 @@ app.post("/register", async (req, res) => {
     try {
         let user = await User.create(req.body);
         let keyPair = await generateTokenPair(user);
-        res.cookie("access_token", keyPair.access_token)
-            .cookie("refresh_token", keyPair.refresh_token)
+        res.cookie("access_token", keyPair.access_token, { httpOnly: true, sameSite: "strict" })
+            .cookie("refresh_token", keyPair.refresh_token, { path: "/refresh" })
             .redirect("/resource");
     } catch (e) {
         res.status(400).send(e);
@@ -104,7 +107,7 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-    if (!!!req.body.name && !!!req.body.password) {
+    if (!!!req.body.name || !!!req.body.password) {
         // res.status(400).send("Missing required fields: name or password.")
         res.redirect("/login");
         return;
@@ -120,8 +123,8 @@ app.post("/login", async (req, res) => {
         return;
     }
     let keyPair = await generateTokenPair(user);
-    res.cookie("access_token", keyPair.access_token)
-        .cookie("refresh_token", keyPair.refresh_token)
+    res.cookie("access_token", keyPair.access_token, { httpOnly: true, sameSite: "strict" })
+        .cookie("refresh_token", keyPair.refresh_token, { path: "/refresh" })
         .redirect("/resource");
 });
 
@@ -142,10 +145,11 @@ app.get("/refresh", async (req, res) => {
         res.status(401).send("Refresh token used or expired");
         return;
     }
+    console.log("was refreshed");
     let keyPair = await generateTokenPair(payload.user)
-    res.cookie("access_token", keyPair.access_token, {httpOnly: true,sameSite: "strict"})
-        .cookie("refresh_token", keyPair.refresh_token, {path: "/" })
-        .redirect(req.query.redirect);
+    res.cookie("access_token", keyPair.access_token, { httpOnly: true, sameSite: "strict" })
+    .cookie("refresh_token", keyPair.refresh_token, { path: "/refresh" })
+    .redirect(req.query.redirect);
 });
 
 app.get("/resource", authorize, (req, res) => {
@@ -165,4 +169,6 @@ app.get("/logout", (req, res) => {
         .redirect('/login');
 });
 
-app.listen(3000);
+app.listen(3000, () => {
+    console.log("http://localhost:3000");
+});

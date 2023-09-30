@@ -48,7 +48,7 @@ app.use((req, res, next) => {
         app.locals.phones = getPhonesFromFile();
     }
     next();
-})
+});
 
 
 

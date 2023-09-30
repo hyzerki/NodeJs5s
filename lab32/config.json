@@ -3,14 +3,7 @@
     "info": {
       "description": "Phone Dictionary",
       "version": "1.0.0",
-      "title": "Phone Dictionary",
-      "contact": {
-        "email": "hyzerki@gmail.com"
-      },
-      "license": {
-        "name": "Apache 2.0",
-        "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-      }
+      "title": "Phone Dictionary"
     },
     "servers": [
       {

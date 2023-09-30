@@ -50,10 +50,11 @@ function authenticate(req, res, next) {
     try {
         payload = jwt.verify(token, ACCESS_TOKEN_KEY);
     } catch {
-        res.status(401).send("Auth header not valid");
+        //res.status(401).send("Auth header not valid");
         console.log("wrong AT")
         // res.redirect(`/refresh?redirect=${req.originalUrl}`);
-        return;
+        
+        return next();
     }
     console.log("payload: ", payload);
     req.user = payload.user;

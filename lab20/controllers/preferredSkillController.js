@@ -28,3 +28,4 @@ exports.delete = asyncHandler(async (req, res, next) => {
     let result = await prisma.preffered_skill.delete({ where: { preffered_skill_id: parseInt(req.params["id"]) } });
     res.send(result);
 });
+

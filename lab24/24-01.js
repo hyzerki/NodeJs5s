@@ -32,7 +32,7 @@ app.get("/login", (req, res) => {
     res.sendFile(path.resolve("./login.html"));
 })
 
-app.get("/auth/google/", passport.authenticate("google", { scope: ["profile"] }));
+app.get("/auth/google/", passport.authenticate("google", { scope: ["profile"], prompt: 'select_account' }));
 
 app.get("/auth/google/callback", passport.authenticate("google", { failureRedirect: "/nok" }),
     (req, res) => { res.redirect("/resource"); }
@@ -40,7 +40,7 @@ app.get("/auth/google/callback", passport.authenticate("google", { failureRedire
 
 app.get("/logout", (req, res) => {
     delete req.session.passport;
-    req.session.save(()=>{
+    req.session.save(() => {
         res.send("Logged out.")
     });
 });

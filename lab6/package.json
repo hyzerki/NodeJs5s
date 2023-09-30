@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "1": "start microsoft-edge:http://localhost:3000 && node 06-02.js"
+    "1": "start microsoft-edge:http://localhost:3000 && node 06-02.js",
+    "2": "node 06-03.js",
+    "3": "node 06-04.js"
   },
   "keywords": [],
   "author": "",

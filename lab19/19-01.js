@@ -32,8 +32,6 @@ const server = http.createServer(async (req, res) => {
                 fs.createReadStream("./index.html").pipe(res);
                 return;
             } else if (dUrl.path === "/api/transaction") {
-                //fix была prisma.... стала ts...
-
                 await prisma.$transaction(async (tx) => {
                     const updResult = await tx.AUDITORIUM.updateMany({
                         data: {
@@ -42,7 +40,6 @@ const server = http.createServer(async (req, res) => {
                             }
                         }
                     });
-
                     throw new Error(`Откат`);
                 });
             } else if (dUrl.path === "/api/faculties") {

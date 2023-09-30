@@ -4,6 +4,8 @@ const deleteButton = document.getElementById("deleteButton");
 
 const nameInitialValue = nameInput.value;
 const numberInitialValue = numberInput.value;
+console.log("🚀 ~ file: script.js:7 ~ numberInitialValue:", numberInitialValue)
+console.log("🚀 ~ file: script.js:7 ~ numberInitialValue:", numberInitialValue)
 
 function updateInputHandler(e) {
     if (nameInput.value === nameInitialValue && numberInput.value === numberInitialValue) {

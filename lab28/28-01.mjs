@@ -6,17 +6,12 @@ import { createClient } from "webdav";
 import { v2 as webdav, } from "webdav-server";
 
 const app = express();
-const server = new webdav.WebDAVServer({ port: 3000 })
-const webDAVClient = createClient('https://webdav.yandex.ru', {username: "flexsodead", password: "uiwwiheuzbemmkxl"});
+const webDAVClient = createClient('https://webdav.yandex.ru', { username: "flexsodead", password: "uiwwiheuzbemmkxl" });
 
 
-server.setFileSystem("/", new webdav.PhysicalFileSystem(path.resolve("./files")), (success) => {
-    server.start(() => {
-        console.log('READY');
-    });
-    app.listen(5000);
-});
 
+
+app.listen(5000);
 app.post('/md/[A-z,0-9,%,/,.]+', function (req, res) {
     let s = '/' + req.url.split('/')[2];
     let dirName = decodeURI(s);
@@ -57,13 +52,15 @@ app.post('/up/[A-z,0-9,%,.]+', function (req, res) {
     let s = '/' + req.url.split('/')[2];
     let uploadFileName = decodeURI(s);
     console.log(uploadFileName)
-    console.log(req.body)
     try {
-        let rs = fs.createReadStream('./files/' + uploadFileName);
+        //let rs = fs.createReadStream('./files/' + uploadFileName);
         let ws = webDAVClient.createWriteStream(uploadFileName);
-        rs.pipe(ws).on("finish", () => {
-            res.end('Файл успешно выгружен');
+        req.pipe(ws).on("finish", () => {
+            res.end("Файл выгружен");
         });
+        // rs.pipe(ws).on("finish", () => {
+        //     res.end('Файл успешно выгружен');
+        // });
     }
     catch (err) {
         console.log(err);
@@ -77,8 +74,10 @@ app.post('/down/[A-z,0-9,%,.]+', function (req, res) {
     let downloadFileName = decodeURI(s);
     webDAVClient.exists(downloadFileName).then((result) => {
         if (result) {
-            webDAVClient.createReadStream(downloadFileName).pipe(fs.createWriteStream(`./files/d/${downloadFileName}`));
-            res.end('Файл успешно скачан');
+            res.header("Content-Type","image/jpeg")
+            webDAVClient.createReadStream(downloadFileName).pipe(res);
+            // webDAVClient.createReadStream(downloadFileName).pipe(fs.createWriteStream(`./files/d/${downloadFileName}`));
+            // res.end('Файл успешно скачан');
         } else {
             res.status(404).end('Такого файла не существует');
         }
@@ -145,3 +144,38 @@ app.post('/move/[A-z,0-9,%,.]+/[A-z,0-9,%,.]+', function (req, res) {
             console.log(err);
         })
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//const server = new webdav.WebDAVServer({ port: 3000 })
+// server.setFileSystem("/", new webdav.PhysicalFileSystem(path.resolve("./files")), (success) => {
+//     server.start(() => {
+//         console.log('READY');
+//     });
+// });

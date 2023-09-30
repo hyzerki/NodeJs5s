@@ -3,7 +3,7 @@ async function onload() {
     if (response.status == 200)
         document.getElementById("names").innerHTML = await response.text();
 
-    response = await fetch("CD.xml");
+    response = await fetch("/CD.xml");
     if (response.status == 200)
         document.getElementById("cd").innerHTML = await response.text();
 }
